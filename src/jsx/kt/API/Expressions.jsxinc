@@ -1,0 +1,20 @@
+(function() {
+
+KT.Expressions
+function getBounds(tm, layerIndex) {
+  ind = name.split('::')[1];
+  s = thisComp.layer(layerIndex);
+  b = s.sourceRectAtTime(tm, false);
+  lt = s.toWorld([b.left, b.top], tm);
+  lb = s.toWorld([b.left, b.top + b.height], tm);
+  rt = s.toWorld([b.left + b.width, b.top], tm);
+  rb = s.toWorld([b.left + b.width, b.top + b.height], tm);
+  return '{ "left":' + lt[0] + ', "top":' + lt[1] + ',"right":' + rb[0] + ',"bottom":' + rb[1] +'}';
+}
+
+
+KT.Expressions = {
+  getBounds: getBounds
+}
+
+})();

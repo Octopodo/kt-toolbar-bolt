@@ -1,0 +1,54 @@
+(function(){
+
+function buildAnimatics(fotageFolder, compFolder, bgColor){
+  var folder = KT.IO.openFolderDialog();
+  if(!folder) return;
+
+  var files = folder.getFiles(),
+      i = 0, j = 0,
+      len = files.length, jlen,
+      footageFolder = _.isFolder(footageFolder) ? footageFolder :KT.Project.addFolder('Footage'),
+      compFolder = _.isFolder(compFolder) ? compFolder : KT.Project.addFolder('Comps'),
+      file,
+      comps = [],
+      comp, compItems,
+      compName,
+      compNumber,
+      compNumbers = [],
+      maxDuration;
+
+  for(; i < len; i++) {
+    file = files[i];
+    if(file instanceof folder) continue;
+    comp = KT.Project.import(file, true, footageFolder, compFolder);
+    if(_.isComp(comp)) {
+      compNumber = parseInt(comp.name.split('.') [0]);
+      compNumbers.push(compNumber)
+
+      if(!comps[compNumber] || !_.isArray(comps[compNumber])){
+        comps[compNumber] = []
+      }
+      comps[compNumber].push(comp)
+    }
+  }
+  compNumbers = _.quickSort(_.unique(compNumbers))
+  i = compNumbers[0], len = comps.length;
+
+  for(; i < len; i++) {
+    $.write(i)
+    compItems = comps[i];
+    j = 0, jlen = compItems.length;
+    comp = KT.Project.addComp({name: i.toString()})
+    for(; j < jlen; j++) {
+      comp.layers.add(compItems[j])
+    }
+    KT.Layers.sequence(comp, true)
+  }
+}
+
+KT.Commands.Animatics = {
+  build: buildAnimatics
+}
+
+})();
+

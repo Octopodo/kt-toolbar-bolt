@@ -1,0 +1,7 @@
+
+  KT.Commands.ExpressTools = {};
+
+
+#include "comp-helpers.jsxinc"
+#include "animatics-builder.jsxinc"
+

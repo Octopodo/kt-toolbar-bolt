@@ -1,0 +1,43 @@
+(function(){
+
+
+function addSolidToComps () {
+  app.beginUndoGroup('Add Solidd To Comps')
+  var args = arguments,
+      color = _.isArray(args[0]) ? args[0] : [0, 0, 0] , 
+      name = _.isString(args[1]) ? args[1] : 'Solid' ,
+      width = args[2], 
+      height = args[3], 
+      par = args[4],
+      duration = args[5],
+      selected = _.filter(app.project.selection, function(item) { return _.isComp(item)}),
+      solids = [],
+      i = 0,
+      len = selected.length,
+      comp,
+      solid;
+
+      color[0] = color[0]/255;
+      color[1] = color[1]/255;
+      color[2] = color[2]/255;
+
+  for(;i < len; i++) {
+    comp = selected[i];
+    width = _.isNumber(width) ? width : comp.width;
+    height = _.isNumber(height) ? height : comp.height;
+    par = _.isNumber(par) ? par : comp.pixelAspect;
+    duration = _.isNumber(duration) ? duration : comp.duration;
+    solid = comp.layers.addSolid(color, name, width, height, par, duration);
+    solids.push (solid)
+  }
+  app.endUndoGroup()
+  return solids
+}
+
+
+KT.Commands.ExpressTools.CompHelpers = {
+  addSolidToComps: addSolidToComps
+}
+
+
+})();
