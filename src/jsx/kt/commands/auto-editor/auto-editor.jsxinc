@@ -41,7 +41,7 @@ function AutoEditor(options) {
   
     //DEAL WITH AUDIO AND AUDIO//
   duration = comp.duration;
-
+  options.audioItemName = ''
   if(_.isAudio(audio) && !comp.layers.byName(audio.name)) {
     comp.layers.add(audio)
     duration = audio.duration > duration ? audio.duration : duration;
