@@ -382,8 +382,7 @@ function panLayer(layer, direction, strength) {
     
     KT.Properties.removeKeys(position)
     checkAndFit(layer)
-    // alert('strength: ' + strength + '\n scale x: ' + scale.value[0] + '\n scaleY: ' + scale.value[1]);
-    // alert('scale X < =: ' + (scale.value[0] <= 100 )+  '\n scale  y <= 100: ' + (scale.value[1] <= 100 ));
+
     strength = (scale.value[0] <= minScale || scale.value[1] <= minScale )? strength : 0;
 
     offsetLayerScale(layer, {x: strength, y: strength});

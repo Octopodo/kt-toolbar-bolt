@@ -117,6 +117,7 @@ function AutoEditor(options) {
     if(options.animatePosition === true) {
       xDir = KT.Math.randomInt(-1, 1);
       yDir = xDir === 0 ? KT.Math.randomSign() : KT.Math.randomInt(-1, 1);
+      $.writeln(layer.name + ': ' + xDir + ', ' + yDir);
       KT.Layers.pan(layer, [xDir, yDir], strength)
     }
     
