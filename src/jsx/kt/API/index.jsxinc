@@ -1,4 +1,5 @@
 
+#include "Store.jsxinc"
 #include "Comps.jsxinc"
 #include "Folders.jsxinc"
 #include "Layers.jsxinc"
@@ -8,4 +9,3 @@
 #include "Expressions.jsxinc"
 #include "Text.jsxinc"
 #include "match-names.jsxinc"
-#include "Store.jsxinc"

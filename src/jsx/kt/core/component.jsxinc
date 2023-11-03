@@ -10,7 +10,7 @@
         component;
 
     for(; i < len; i++) {
-      component = KT.Components.create(this.children[i]);
+      component = new KT.Components.Component(this.children[i]);
       component.parent = this;
       this.addChild(component);
       component.addChildren()

@@ -3,36 +3,38 @@
 
 function Test() {
   app.beginUndoGroup('Testing')
+  var proj = KT.Project;
   var comp = KT.Project.getActiveComp()
-  var layer = KT.Layers({source:comp})[0]
-  // var comp = KT.Project.getComps()
-  // KT.Comps(comp).fitToContent()
-  // KT.Layers.fitToComp(layer);
-  // layer.offsetScale({x:200, y: 50});
-  // var commands = KT.Commands;
-  // KT.Commands.AutoEditor.autoPan(comp, [1, -0], 10)
-  // KT.Commands.AutoEditor.autoZoom(comp, -50, true)
-  var inside = KT.Layers.insideWorkArea(layer)
+  var layer = KT.Layers({source:comp})
+  // // var comp = KT.Project.getComps()
+  // // KT.Comps(comp).fitToContent()
+  // // KT.Layers.fitToComp(layer);
+  // // layer.offsetScale({x:200, y: 50});
+  // // var commands = KT.Commands;
+  // // KT.Commands.AutoEditor.autoPan(comp, [1, -0], 10)
+  // // KT.Commands.AutoEditor.autoZoom(comp, -50, true)
+  // var inside = KT.Layers.insideWorkArea(layer)
 
-  KT.Store.add(comp.name, comp)
-  var items = KT.Project.get(["El RIto Roto Audio.wav", "KT-Auto Edit"]);
-  KT.Store.add(items[0].name, items[0])
-  var opts = {
-    strength: 10,
-    zoomStrength: 5,
-    randomness: 2,
-    animatePosition: true,
-    animateScale: true,
-    audioItemName: items[0]? items[0].name : '',
-    compItemName: comp.name, //items[1] ? items[1].name : '',
-    duration: 120,
-    insideWorkArea: true
-  }
+  // KT.Store.add(comp.name, comp)
+  // var items = KT.Project.get(["El RIto Roto Audio.wav", "KT-Auto Edit"]);
+  // KT.Store.add(items[0].name, items[0])
+  // var opts = {
+  //   strength: 10,
+  //   zoomStrength: 5,
+  //   randomness: 2,
+  //   animatePosition: true,
+  //   animateScale: true,
+  //   audioItemName: items[0]? items[0].name : '',
+  //   compItemName: comp.name, //items[1] ? items[1].name : '',
+  //   duration: 120,
+  //   insideWorkArea: true
+  // }
 
-  KT.Commands.AutoEditor(opts)
-
-
-  app.endUndoGroup()
+  // KT.Commands.AutoEditor(opts)
+  // var K = KT
+  // KT.Project.addFolder("KT//TEST//PATH")
+  var bounds = layer.bounds()
+ app.endUndoGroup()
 }
 
 Test()

@@ -1,6 +1,11 @@
 (function(){
 //CONSTANTS
 
+var MASTER_FOLDER_NAME = 'KT_PROJECT',
+    DATA_FOLDER_NAME = '__data__',
+    DATA_COMP_NAME = '__data_comp__',
+    DATA_LAYER_NAME = '__data_layer_'
+
 var defaults = {
   comps: {
     NAME: 'KT_COMP', 
@@ -92,21 +97,6 @@ function addFolder(path) {
 }
 
 
-/**Simple check for file extensions
-* @function checkType
-* @memberof KT.Project
-* @private
-* @param {String} name - The item name to check
-* @param {String|String[]} [types] String or array from strings of the types to check. If not pased all types pass the check.
-*/
-function checkType(name, types){
-  var types = _.isArray(types) ?  _.isString(types) :  null ?  [types] : _.flatten(types) ;
-  if(types === null || types === undefined) return true;
-  types = '\.' + (types.join('|\.')); 
-  types = new RegExp(types, 'g');
-  return name.match(types) !== null
-}
-
 /** Filters the passed param and returns a the folder item in the project, if exists
 * @function getFolder
 * @memberof KT.Project
@@ -128,6 +118,24 @@ function getFolder(folder) {
     return app.project.items;
   }
 }
+
+
+
+/**Simple check for file extensions
+* @function checkType
+* @memberof KT.Project
+* @private
+* @param {String} name - The item name to check
+* @param {String|String[]} [types] String or array from strings of the types to check. If not pased all types pass the check.
+*/
+function checkType(name, types){
+  var types = _.isArray(types) ?  _.isString(types) :  null ?  [types] : _.flatten(types) ;
+  if(types === null || types === undefined) return true;
+  types = '\.' + (types.join('|\.')); 
+  types = new RegExp(types, 'g');
+  return name.match(types) !== null
+}
+
 
 /** Filters the passed param and returns a the comp if exists
 * @function getComp
@@ -490,20 +498,55 @@ function saveProject(){
   }
 }
 
+
+function createKTProject(store) {
+  var masterFolder = addFolder(MASTER_FOLDER_NAME),
+      dataFolder = addFolder(masterFolder.name + "//" + DATA_FOLDER_NAME),
+      dataComp = _.find(dataFolder.items, function(item) { return item.name === DATA_COMP_NAME})
+      || addComp({
+          name: DATA_COMP_NAME,
+          folder:dataFolder
+      }),
+      dataLayer = dataComp.layers.byName(DATA_LAYER_NAME) ||dataComp.layers.addText(DATA_LAYER_NAME)
+    
+    store.add(MASTER_FOLDER_NAME, masterFolder);
+    store.add(DATA_FOLDER_NAME, dataFolder);
+    store.add(DATA_COMP_NAME, dataComp);
+    store.add(DATA_LAYER_NAME, masterFolder);
+
+          
+}
+
+
 /**A module to deal with project items: create comps, import footage and filter project items. If called as function, return the project items
 * @namespace Project
 * @module
 * @memberof KT
 * @function Project
 */
+
 function Project () {
+
+  var store = new KT.Store.addStore('Project');
+  createKTProject(store)
+  this.store = function() {
+    return store;
+  }
+
+  this.getMasterFolder = function() { return store.get(MASTER_FOLDER_NAME)}
+  this.getDataFolder = function() { return store.get(DATA_FOLDER_NAME)}
+  this.getDataComp = function() { return store.get(DATA_COMP_NAME)}
+  this.getDataLayer = function() { return store.get(DATA_LAYER_NAME)}
+
   return app.project
 };
 
 
 
 
-Project.addComp = addComp;
+KT.Project = new Project();
+
+Project.prototype.addComp = addComp;
 Project.addFolder = addFolder;
 Project.addCompFromItem = addCompFromItem;
 Project.import = importFootage;
@@ -525,7 +568,7 @@ Project.getActiveComp = getActiveComp;
 
 Project.save = saveProject;
 
-KT.Project = Project;
+
 
 
 })();

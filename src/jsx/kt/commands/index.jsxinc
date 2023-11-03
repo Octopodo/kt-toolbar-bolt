@@ -6,3 +6,4 @@ KT.Commands = {};
 #include "text/index.jsxinc"
 #include "karaoke/index.jsxinc"
 #include "auto-editor/index.jsxinc"
+#include "project-items/index.jsxinc"

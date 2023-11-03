@@ -82,12 +82,14 @@ function getBounds(layers){
       keys = _.uniq(keys, false, 'time')
       for(klen = keys.length, k = 0; k < klen; k++){
         key = keys[k];
-        dataProperty.expression = expression + '; getBounds(' +key.time+','+key.layer.index+');'
+        dataProperty = KT.Expressions.add(dataProperty, 'getBounds', key.time, layer.containingComp, layer)
+        // dataProperty.expression = expression + '; getBounds(' +key.time+','+key.layer.index+');'
         newBounds = JSON.parse(dataProperty.valueAtTime(key.time, false));
         boundsCollection.push(newBounds);
       }
     } else {
-      dataProperty.expression = expression + '; getBounds(' + 0 +','+ layer.index+');';
+      dataProperty = KT.Expressions.add(dataProperty, 'getBounds', 0, layer.containingComp, layer)
+      // dataProperty.expression = expression + '; getBounds(' + 0 +','+ layer.index+');';
       newBounds = JSON.parse(dataProperty.valueAtTime(0, false));
       boundsCollection.push(newBounds);
     }
