@@ -52,7 +52,6 @@ function getBounds(layers){
       layer,
       dataLayer,
       dataProperty,
-      expression = KT.Expressions.getBounds.toString(),
       comp, lastComp,
       i = 0, p = 0, k = 1,
       len = layers.length, plen, klen;
@@ -60,11 +59,10 @@ function getBounds(layers){
   for(; i < len; i++) {
     layer = layers[i];
     comp = layer.containingComp;
-    dataLayer = comp.layers.addText();
-    dataLayer.name = layer.name + '::' + dataLayer.index;
+    dataLayer = KT.Project.dataLayer()
     dataProperty = dataLayer.property("Source Text");
     collectBounds(layer);
-    dataLayer.remove();
+
   }
 
   bounds.left = _.min(boundsCollection, function(b){return b.left}).left;
@@ -82,12 +80,12 @@ function getBounds(layers){
       keys = _.uniq(keys, false, 'time')
       for(klen = keys.length, k = 0; k < klen; k++){
         key = keys[k];
-        dataProperty.expression = expression + '; getBounds(' +key.time+','+key.layer.index+');'
+        dataProperty = KT.Expressions.add(dataProperty, 'getBounds', key.time, layer.containingComp, layer)
         newBounds = JSON.parse(dataProperty.valueAtTime(key.time, false));
         boundsCollection.push(newBounds);
       }
     } else {
-      dataProperty.expression = expression + '; getBounds(' + 0 +','+ layer.index+');';
+      dataProperty = KT.Expressions.add(dataProperty, 'getBounds', 0, layer.containingComp, layer)
       newBounds = JSON.parse(dataProperty.valueAtTime(0, false));
       boundsCollection.push(newBounds);
     }
@@ -384,8 +382,7 @@ function panLayer(layer, direction, strength) {
     
     KT.Properties.removeKeys(position)
     checkAndFit(layer)
-    // alert('strength: ' + strength + '\n scale x: ' + scale.value[0] + '\n scaleY: ' + scale.value[1]);
-    // alert('scale X < =: ' + (scale.value[0] <= 100 )+  '\n scale  y <= 100: ' + (scale.value[1] <= 100 ));
+
     strength = (scale.value[0] <= minScale || scale.value[1] <= minScale )? strength : 0;
 
     offsetLayerScale(layer, {x: strength, y: strength});

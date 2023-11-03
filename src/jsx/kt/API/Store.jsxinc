@@ -1,10 +1,10 @@
 (function(){
 
+var stores = {};
 
-
-function Store () {
+function Store (name) {
   var state = {}
-
+  var name = name || 'KT_Store'
 
   this.get = function(itemName) {
     return state[itemName]
@@ -12,10 +12,10 @@ function Store () {
 
   this.set = function(itemName, value) {
     if(state[itemName] === undefined) {
-      alert("Store item:'" + itemName + "' doesn't exist")
+      alert(name + "Store item:'" + itemName + "' doesn't exist")
       return
     } else if (typeof state[itemName] !== typeof value) {
-      alert("Can't register '" + itemName + "' in store because it expects: \n'" + typeof state[itemName] + "' \n not \ '" + typeof value + "'' " )
+      alert("Can't register '" + itemName + "' in " + name +" store because it expects: \n'" + typeof state[itemName] + "' \n not \ '" + typeof value + "'' " )
       return
     } else {
       state[itemName] = value;
@@ -30,7 +30,7 @@ function Store () {
 
   this.add = function(name, value) {
     if(state[value] !== undefined) {
-      alert("Te value '" + name + "' already exists in the store, select another name")
+      alert("Te value '" + name + "' already exists in the" + name + " store, select another name")
       return
     } else {
       state[name] = value
@@ -74,8 +74,20 @@ function Store () {
 
 
 
-KT.Store = new Store()
+function addStore(name) {
+  if(stores[name] !== undefined) {
+      alert("The store '" + name + "' already exists, select another name")
+      return
+    } else {
+      stores[name] = new Store()
+      return stores[name]
+    }
+}
+
+KT.Store = new Store();
+
+KT.Store.addStore = addStore;
 
 
-})()
+})();
 

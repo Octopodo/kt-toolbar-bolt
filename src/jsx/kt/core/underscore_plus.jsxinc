@@ -9,7 +9,8 @@ function directions() {
     }
 }
 
-var underscoreEach = _.each;
+var underscoreEach = _.each,
+    underscoreFind = _.find;
 function forEach(list, iteratee, context) {
    
   if(isCollection(list)) {
@@ -21,6 +22,23 @@ function forEach(list, iteratee, context) {
     underscoreEach(list, iteratee, context)
   }
 }
+
+function collectionFind(list, predicate, context) {
+if(isCollection(list)) {
+    var i = 1, len = list.length;
+    for(; i <= len; i++) {
+      var item = predicate(list[i], i, list)
+      if(item === true) {
+        return list[i]
+      }
+    }
+  } else {
+    return underscoreFind(list, predicate, context)
+  }
+
+}
+
+
 function hasKeys(property) {
   return !_.isPropertyGroup(property) && property.canVaryOverTime != undefined && property.canVaryOverTime && property.numKeys > 0
 }
@@ -406,6 +424,7 @@ function twoDVector(vector) {
 _.mixin({
   each: forEach,
   filterSize: filterSize, 
+  find: collectionFind,
   formatInteger: formatInteger,
   hasKeys: hasKeys,
   is2DVector: is2DVector,
