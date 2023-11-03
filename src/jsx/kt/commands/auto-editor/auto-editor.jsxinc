@@ -1,7 +1,7 @@
 (function(){
 
 var MAIN_COMP_NAME = 'KT-Auto Edit',
-    KT_FOLDER_NAME = "KT"
+    KT_FOLDER_NAME = "KT_AUTO_EDITOR"
     PROJECT_FOLDER_NAME = 'KT-AutoEdit',
     NESTED_FOLDER_NAME = 'KT-Nests',
     SEQUENCE_MIN_DURATION = 5;
@@ -19,6 +19,7 @@ function AutoEditor(options) {
       outPoint = 0,
       duration =  options.duration || SEQUENCE_MIN_DURATION,
       seguenceInfo = [],
+      projectFolder = KT.Project.masterFolder().name + '//',
       i = 0,
       insideWorkArea=options.insideWorkArea === true ? true : false,
       startTime = insideWorkArea === true ? comp.workAreaStart : 0,
@@ -36,12 +37,12 @@ function AutoEditor(options) {
   comp.openInViewer()
 
   //CREAR PROYECTO//
-  masterFolder = KT.Project.addFolder(KT_FOLDER_NAME);
+  masterFolder = KT.Project.addFolder(projectFolder + KT_FOLDER_NAME);
   
   
     //DEAL WITH AUDIO AND AUDIO//
   duration = comp.duration;
-
+  options.audioItemName = _.isString(options.audioItemName)  ? options.audioItemName : '';
   if(_.isAudio(audio) && !comp.layers.byName(audio.name)) {
     comp.layers.add(audio)
     duration = audio.duration > duration ? audio.duration : duration;
@@ -79,7 +80,7 @@ function AutoEditor(options) {
   //Project Items
   if(items.length > 0 && !insideWorkArea){
     options.items = options.items instanceof KT.Layers ? options.items : KT.Layers();
-    nestedFolder  = KT.Project.addFolder(KT_FOLDER_NAME + '//' + NESTED_FOLDER_NAME);
+    nestedFolder  = KT.Project.addFolder(projectFolder + KT_FOLDER_NAME + '//' + NESTED_FOLDER_NAME);
     len = items.length;
 
     for(i; i < len; i++) {

@@ -52,7 +52,6 @@ function getBounds(layers){
       layer,
       dataLayer,
       dataProperty,
-      expression = KT.Expressions.getBounds.toString(),
       comp, lastComp,
       i = 0, p = 0, k = 1,
       len = layers.length, plen, klen;
@@ -60,8 +59,7 @@ function getBounds(layers){
   for(; i < len; i++) {
     layer = layers[i];
     comp = layer.containingComp;
-    dataLayer = comp.layers.addText();
-    dataLayer.name = layer.name + '::' + dataLayer.index;
+    dataLayer = KT.Project.dataLayer()
     dataProperty = dataLayer.property("Source Text");
     collectBounds(layer);
     dataLayer.remove();
@@ -83,13 +81,11 @@ function getBounds(layers){
       for(klen = keys.length, k = 0; k < klen; k++){
         key = keys[k];
         dataProperty = KT.Expressions.add(dataProperty, 'getBounds', key.time, layer.containingComp, layer)
-        // dataProperty.expression = expression + '; getBounds(' +key.time+','+key.layer.index+');'
         newBounds = JSON.parse(dataProperty.valueAtTime(key.time, false));
         boundsCollection.push(newBounds);
       }
     } else {
       dataProperty = KT.Expressions.add(dataProperty, 'getBounds', 0, layer.containingComp, layer)
-      // dataProperty.expression = expression + '; getBounds(' + 0 +','+ layer.index+');';
       newBounds = JSON.parse(dataProperty.valueAtTime(0, false));
       boundsCollection.push(newBounds);
     }

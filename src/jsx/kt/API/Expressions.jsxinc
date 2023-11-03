@@ -9,12 +9,11 @@ var expressions = {};
 
 
 expressions.getBounds = function (time, comp, layer) {
-  if(_.isComp(comp) ||_.isLayer(layer)) {
+  if(!_.isComp(comp) ||!_.isLayer(layer)) {
     return ''
   }
 
   function getBounds(time, compName, layerName) {
-    ind = name.split('::')[1];
     s = comp(compName).layer(layerName);
     b = s.sourceRectAtTime(time, false);
     lt = s.toWorld([b.left, b.top], time);
@@ -24,7 +23,7 @@ expressions.getBounds = function (time, comp, layer) {
     return '{ "left":' + lt[0] + ', "top":' + lt[1] + ',"right":' + rb[0] + ',"bottom":' + rb[1] +'}';
   }
 
-  return getBounds.toString() + '; getBounds('+time+', +"' +comp.name +'", "' + layer.name +'");' 
+  return getBounds.toString() + '; getBounds('+time+', "' +comp.name +'", "' + layer.name +'");' 
 
 }
 
@@ -37,17 +36,18 @@ KT.Expressions = function() {
 
   //
   this.add = function() {
-    var property = arguments[0]
+    var property = arguments[0],
         name = arguments[1],
         args = Array.prototype.slice.call(arguments, 2);
 
     if(!_.isProperty(property) || !property.canSetExpression) { return property }
 
-    property.expression = expressions[name].apply(null, args);
+    var exp = expressions[name].apply(null, args);
+    property.expression = exp;
     return property;
   }
 }
 
-
+KT.Expressions = new KT.Expressions()
 
 })();
