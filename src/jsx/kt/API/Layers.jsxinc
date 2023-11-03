@@ -62,7 +62,7 @@ function getBounds(layers){
     dataLayer = KT.Project.dataLayer()
     dataProperty = dataLayer.property("Source Text");
     collectBounds(layer);
-    dataLayer.remove();
+
   }
 
   bounds.left = _.min(boundsCollection, function(b){return b.left}).left;
