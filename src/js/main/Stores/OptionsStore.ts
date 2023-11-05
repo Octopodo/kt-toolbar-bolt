@@ -39,7 +39,8 @@ export const OptionsStore = defineStore('options',{
     testParam: {a: 1, b:2},
     zoom: 0,
     zoomStrength: 20,
-    waSelected: true
+    waSelected: true,
+    worareaTolerance: 50
   }),
   getters: {
 
@@ -100,6 +101,7 @@ export const OptionsStore = defineStore('options',{
     },
 
     autoEdit() {
+      alert(this.animateScale)
       let args = {
         strength:this.panStrength ,
         zoomStrength: this.zoomStrength,
@@ -110,6 +112,7 @@ export const OptionsStore = defineStore('options',{
         compItemName: this.compItemName,
         duration: this.duration,
         insideWorkArea: this.waSelected,
+        workareaTolerance: this.worareaTolerance
       }
 
       let command = `KT.Commands.AutoEditor(${JSON.stringify(args)});`
@@ -117,11 +120,26 @@ export const OptionsStore = defineStore('options',{
         let parsed = JSON.parse(res)
         this.compSelected = parsed.comp
         this.audioSelected = parsed.audio
-        
-      }
-        );
-    }
+        }
+      );
+    },
 
+    moveLayersToWorkarea(start?:Boolean) {
+      let command = `KT.Layers.getSelected().toWorkArea(${start})` ;
+      callCommand(command) 
+    },
+
+    flipLayers() {
+
+    },
+    moveLayersToCurrentTime() {
+      let command = `KT.Layers.getSelected().moveToCurrentTime()`;
+      callCommand(command)
+    },
+
+    fitToComp() {
+      let command = `KT.Layers.getSelected().fitToComp()`
+    }
   },
 })
 

@@ -62,7 +62,6 @@ function getBounds(layers){
     dataLayer = KT.Project.dataLayer()
     dataProperty = dataLayer.property("Source Text");
     collectBounds(layer);
-
   }
 
   bounds.left = _.min(boundsCollection, function(b){return b.left}).left;
@@ -125,6 +124,7 @@ function getSouceBounds(layer) {
 * @returns {Array} - An array with the filterd layers or an empty array
 */
 function getLayers(opts) {
+  opts.source = !opts.source ? KT.Project.getActiveComp() : opts.source;
   var sources = _.isArray(opts.source) ? _.uniq(_.flatten(Array.prototype.slice.call(opts.source))) : [opts.source],
       layers = [],
       comps = [],
@@ -361,16 +361,19 @@ function checkAndFit(layer, force) {
   var axis = findMinAxis(layer),
       bounds = getBounds(layer),
       comp = layer.containingComp;
+      percentX = layer.source.width/comp.width,
+      percentY = layer.source.height/comp.height;
+  
 
-  if(bounds.width < comp.width || bounds.height < comp.height || force === true) {
+  if(bounds.width * percentX < comp.width || bounds.height * percentY < comp.height || force === true) {
     fitLayerToComp(layer, undefined, axis);
   }
-}
 
-
-function checkScale() {
+  return {x: percentX, y: percentY}
 
 }
+
+
 
 function panLayer(layer, direction, strength) {
   var direction = _.twoDVector(direction),
@@ -383,14 +386,23 @@ function panLayer(layer, direction, strength) {
       comp = layer.containingComp,
       minScale = 115,
       alignData,
+      percent,
+      minPercent,
+      correctedScale,
       axis;
     
     KT.Properties.removeKeys(position)
-    checkAndFit(layer)
+    percent = checkAndFit(layer);
+    correctedScale = {
+      x: scale.value[0] * percent.x,
+      y: scale.value[1] * percent.y
+    }
 
+    minPercent = Math.min(percent.x, percent.y);
+    minPercent = minPercent === 0? 1 : minPercent;
     //>>>>>>>>>>>>>>>>>------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     //Hay que calcularlo proporcionalmente con el tamaño de composicion
-    strength = (scale.value[0] <= minScale || scale.value[1] <= minScale )? strength : 0;
+    strength = ( correctedScale.x <= minScale || correctedScale.y <= minScale )? strength / minPercent: 0 ;
 
     offsetLayerScale(layer, {x: strength, y: strength});
     alignLayer(layer, direction);
@@ -417,6 +429,99 @@ function zoomLayer(layer, strength, reset){
   scale.setValueAtTime(t2, value)
 
 }
+
+function eachLayer(callback, args) {
+  for(var i = 0, len = this.length; i < len; i++){
+    callback.apply(this, args);
+  }
+}
+
+function layerIsInsideWorkArea(layer, tolerance) {
+  var maxTolerance = 10,
+      comp = layer.containingComp,
+      tolerance = tolerance || 0,
+      tolerance = tolerance/10 * comp.workAreaDuration/100,
+      start = comp.workAreaStart + tolerance,
+      out = comp.workAreaStart + comp.workAreaDuration - tolerance,
+      inPoint = layer.inPoint,
+      outPoint = layer.outPoint,
+      inside = (inPoint > start && inPoint <out) 
+      ||(outPoint > start && outPoint < out)
+  
+  return inside
+}
+
+
+
+function moveLayer (layer, time) {
+  var newTime = layer.startTime - layer.inPoint + time;
+  layer.startTime = newTime;
+  return newTime
+}
+
+function moveLayerToCurrentTime(layer) {
+  moveLayer(layer, layer.containingComp.time)
+}
+
+function moveLayerToWorkArea(layer, startOrEnd) {
+  var comp = layer.containingComp,
+      start = startOrEnd === true,
+      end = startOrEnd === false,
+      mid = startOrEnd === undefined || start === null,
+      workarea = _.ternary(
+        start, comp.workAreaStart,
+        end, comp.workAreaStart + comp.workAreaDuration,
+        mid, comp.workAreaStart + comp.workAreaDuration/2
+      )
+
+  moveLayer(layer, workarea)
+  return workarea
+}
+
+function getSelectedLayers(opts) {
+  var opts = opts || {};
+  opts.condition = function(layer) {
+    return layer.selected
+  }
+  var layers = KT.Layers(opts)
+  return layers
+}
+
+
+function reverseLayersInTimeline(layers) {
+  
+  var layers = layers || KT.Layers.getSelected();
+      len = layers.length,
+      i = 1,
+      pivotLayer = layers[0],
+      layer;
+
+  for(; i < len; i++) {
+    layer  = layers[i];
+    layer.moveBefore(pivotLayer)
+    pivotLayer = layer
+  }
+}
+
+
+
+function removeLayerKeys(layer, props) {
+  var props = _.toArray(props),
+      i = 0,
+      len = props.length,
+      prop;
+  
+  for(; i < len; i++) {
+    prop = layer.transform[prop];
+    if(_.isProperty(pro)) {
+      KT.Properties.removeKeys(prop)
+    }
+  }
+}
+
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
 
 /** A private object that maps layer type checker function under the extended underscore namespace
 * @typedef {Object} checkLayerType
@@ -481,29 +586,13 @@ function initLayers(opts){
   return layers
 }
 
-function eachLayer(callback, args) {
-  for(var i = 0, len = this.length; i < len; i++){
-    callback.apply(this, args);
-  }
-}
-
-function layerIsInsideWorkArea(layer) {
-  var comp = layer.containingComp,
-      start = comp.workAreaStart,
-      out = start + comp.workAreaDuration,
-      inPoint = layer.inPoint,
-      outPoint = layer.outPoint,
-      inside = (inPoint > start && inPoint <out) 
-      ||(outPoint > start && outPoint < out)
-  
-  return inside
-}
 
 
 Layers.prototype = {
   init: function(opts) {
     return initLayers(opts)
   },
+
 
   bounds: function(){
     return getBounds(this)
@@ -512,42 +601,86 @@ Layers.prototype = {
     for(var i = 0, len = this.length; i < len; i++){
       offsetLayerPosition(this[i], offset)
     }
+    return this
   },
   offsetScale: function(offset) {
     for(var i = 0, len = this.length; i < len; i++){
       offsetLayerScale(this[i], offset, true)
     }
+    return this
   },
   align: function(direction) {
     for(var i = 0, len = this.length; i < len; i++){
       alignLayer(this[i], direction)
     }
+    return this
   },
   fitToComp: function(margins, axis) {
     for(var i = 0, len = this.length; i < len; i++){
       fitLayerToComp(this[i], margins, axis)
     }
+    return this
+  },
+
+  move: function(time) {
+    for(var i = 0, len = this.length; i < len; i++){
+      moveLayer(this[i], time)
+    }
+    return this
+  },
+  moveToCurrentTime: function() {
+    for(var i = 0, len = this.length; i < len; i++){
+      moveLayerToCurrentTime(this[i])
+    }
+    return this
   },
   select: function(select) {
     for(var i = 0, len = this.length; i < len; i++){
       select = select === undefined ? true : select
       this[i].selected = select
     }
+    return this
   },
   pan: function (direction, strength) {
+    var randDirection = !direction
     for(var i = 0, len = this.length; i < len; i++){
+      var direction = randDirection 
+        ? [KT.Math.randomInt(-1, 1), KT.Math.randomInt(-1, 1)]
+        : direction;
       panLayer(this[i], direction, strength)
     }
+    return this
+  },
+
+  removeKeys: function(props) {
+    for(var i = 0, len = this.length; i < len; i++){
+      removeLayerKeys(this[i], props)
+    }
+    return this
+  },
+
+  reverse: function() {
+    reverseLayersInTimeline(this)
+    return this
+  },
+
+  toWorkArea: function(startOrEnd) {
+    for(var i = 0, len = this.length; i < len; i++){
+      moveLayerToWorkArea(this[i], startOrEnd)
+    }
+    return this
   },
 
   zoom: function ( strength, reset) {
     for(var i = 0, len = this.length; i < len; i++){
       zoomLayer(this[i], strength, reset)
     }
+    return this
   },
 
   sequence: function(reverse, startTime, callback) {
     sequenceLayers(this, reverse, startTime, callback)
+    return this
   },
 
   tail: function() {
@@ -568,5 +701,6 @@ KT.Layers.pan = panLayer;
 KT.Layers.zoom = zoomLayer;
 KT.Layers.fitAxis = checkAndFit;
 KT.Layers.insideWorkArea = layerIsInsideWorkArea;
+KT.Layers.getSelected = getSelectedLayers;
 })();
 

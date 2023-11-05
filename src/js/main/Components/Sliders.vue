@@ -1,8 +1,9 @@
 <template>
-
-    <v-col cols="2" class="mt-5">
+  
+    <v-col cols="1" class="">
       <!-- <div class="text-caption">Pan</div> -->
       <v-slider 
+      
         thumb-size="12"
         thumb-label
         class=" pb-0" 
@@ -73,11 +74,11 @@ const randomnessValue = computed({
 const maxRandomness = computed(() => store.maxRandomness)
 
 function color(comp:any) {
-  if (comp.value < 25) return 'indigo'
-  if (comp.value < 50) return 'green'
-  if (comp.value < 75) return  'yellow'
-  if (comp.value < 100) return 'orange'
-  return 'red'
+  if (comp.value < 25) return 'blue-lighten-4'
+  if (comp.value < 50) return 'blue-lighten-3'
+  if (comp.value < 75) return  'blue-lighten-2'
+  if (comp.value < 100) return 'blue-lighten-1'
+  return 'blue-darken-1'
 }
 
 const panColor = computed(() => color(panStrength))

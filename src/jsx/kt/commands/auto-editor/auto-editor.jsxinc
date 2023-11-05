@@ -10,7 +10,7 @@ var MAIN_COMP_NAME = 'KT-Auto Edit',
 
 
 function AutoEditor(options) {
-  // alert(JSON.stringify(options))
+  alert(JSON.stringify(options.animateScale))
   var comp = KT.Store.get(options.compItemName),
       audio = KT.Store.get(options.audioItemName),
       items = app.project.selection,
@@ -23,6 +23,7 @@ function AutoEditor(options) {
       i = 0,
       insideWorkArea=options.insideWorkArea === true ? true : false,
       startTime = insideWorkArea === true ? comp.workAreaStart : 0,
+      workareaTolerance = options.workareaTolerance || 0,
       masterFolder,
       nestedFolder,
       avrgDuration,
@@ -63,7 +64,7 @@ function AutoEditor(options) {
         var typePass = true; 
         
         if(options.insideWorkArea === true){
-          typePass = layer.selected === true || KT.Layers.insideWorkArea(layer)
+          typePass = layer.selected === true || KT.Layers.insideWorkArea(layer, workareaTolerance)
         }  
         pass = typePass 
           && _.isAVLayer(layer) 
@@ -97,6 +98,7 @@ function AutoEditor(options) {
   options.items.sequence(false, startTime, function(layer, i, layers) {
     var randomness = _.isNumber(options.randomness) ? options.randomness : 0,
         xDir, yDir, zoom, zoomLayer;
+    // alert(randomness)
     clipDuration = avrgDuration + KT.Math.randomInt(-randomness, randomness);
     clipDuration = clipDuration <= 0 ? 1 : clipDuration;
         
@@ -117,6 +119,7 @@ function AutoEditor(options) {
     if(options.animatePosition === true) {
       xDir = KT.Math.randomInt(-1, 1);
       yDir = xDir === 0 ? KT.Math.randomSign() : KT.Math.randomInt(-1, 1);
+      alert(layer.name + ': ' + xDir + ', ' + yDir)
       $.writeln(layer.name + ': ' + xDir + ', ' + yDir);
       KT.Layers.pan(layer, [xDir, yDir], strength)
     }

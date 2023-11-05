@@ -9,9 +9,10 @@
           size="x-small"
           rounded="false"
           icon="mdi-arrow-collapse-all"
-          color="orange"
           class="mb-1"
           @click.prevent="zoom(-1)"
+          :variant="data.variant"
+          :color="data.color"
         ></v-btn>
       </v-row>
       <v-row>
@@ -19,8 +20,9 @@
           size="x-small"
           rounded="false"
           icon="mdi-arrow-expand-all"
-          color="orange"
           @click.prevent="zoom(1)"
+          :variant="data.variant"
+          :color="data.color"
         ></v-btn>
       </v-row>
       
@@ -35,6 +37,10 @@ import { OptionsStore } from '../Stores/OptionsStore'
 
 const store = OptionsStore()
 
+const data = reactive({
+  variant:"tonal",
+  color: "amber-darken-3"
+})
 
 function zoom(multiplier:number){
   store.zoom(multiplier)

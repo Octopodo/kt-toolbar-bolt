@@ -1,21 +1,22 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-4">
     <v-row>
 
     <v-col>
-      <item-selectors
-        class="ml-4"
-      ></item-selectors>
+      
       <v-btn 
-        class="mt-3 ml-3" 
-        width="300" 
-        height="50" 
-        color="red" 
+        class=" mx-6" 
+        width="180" 
+        height="30" 
+        color="light-blue-darken-1" 
         border-radius="0"
         @click.prevent="autoedit"
       >
         <v-icon size="x-large">mdi-alien</v-icon>
       </v-btn>
+      <item-selectors
+        class="ml-4 mt-1"
+      ></item-selectors>
     </v-col>
   </v-row>
   </div>

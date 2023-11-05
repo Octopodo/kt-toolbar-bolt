@@ -1,8 +1,8 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col cols="5" class="ml-2">
       <v-row>
-        <v-label>
+        <v-label class="text-body-2">
           Audio
         </v-label>
         <v-btn
@@ -10,7 +10,7 @@
           class="transparent"
           @click.prevent="getAudio"
           flat
-          size="small"
+          size="x-small"
         >
           <v-icon :color="audioStyle.color" size="x-large">
             {{audioStyle.icon}}
@@ -18,7 +18,7 @@
         </v-btn>
       </v-row>
       <v-row>
-        <v-label>
+        <v-label class="text-body-2">
           Comp
         </v-label>
         <v-btn
@@ -26,7 +26,7 @@
           class="transparent"
           @click.prevent="getComp"
           flat
-          size="small"
+          size="x-small"
         >
           <v-icon :color="compStyle.color" size="x-large">
             {{compStyle.icon}}
@@ -38,15 +38,16 @@
     <v-col>
       <v-row>
 
-        <v-label>
-          Work Area
+        <v-label class="text-body-2" color="light-blue-darken-1" >
+          W. Area
         </v-label>
         <v-btn
           icon
           class="transparent"
           @click.prevent="selectWa"
           flat
-          size="small"
+          size="x-small"
+          
         >
           <v-icon :color="waStyle.color" size="x-large">
             {{waStyle.icon}}
@@ -70,7 +71,9 @@ const data = reactive({
   compColor: 'red',
   compIcon:'mdi-circle-outline',
   waColor: 'red',
-  waIcon:'mdi-circle-outline'
+  waIcon:'mdi-circle-outline',
+  activeColor: 'light-blue-darken-1',
+  unactiveColor: 'grey'
 })
 
 const audioSelected = computed({
@@ -95,17 +98,17 @@ const waSelected = computed({
 })
 
 const audioStyle = computed(()=>({ 
-  color: audioSelected.value ? 'green' : 'red',
+  color: audioSelected.value ? data.activeColor : data.unactiveColor,
   icon: audioSelected.value ? 'mdi-circle-slice-8' : 'mdi-circle-outline'
 }))
 
 const compStyle = computed(()=>({ 
-  color: compSelected.value ? 'green' : 'orange-darken-3',
+  color: compSelected.value ? data.activeColor : data.unactiveColor,
   icon: compSelected.value ? 'mdi-circle-slice-8' : 'mdi-circle-outline'
 }))
 
 const waStyle = computed(()=>({ 
-  color: waSelected.value ? 'green' : 'red',
+  color: waSelected.value ? data.activeColor : data.unactiveColor,
   icon: waSelected.value ? 'mdi-circle-slice-8' : 'mdi-circle-outline'
 }))
 

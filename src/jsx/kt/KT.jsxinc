@@ -9,6 +9,8 @@ function Test() {
   var proj = KT.Project;
   var comp = KT.Project.getActiveComp()
   var layer = KT.Layers({source:comp})
+  var layers = KT.Layers.getSelected().removeKeys()
+  // layers.pan( null, 10).sequence(true, 0)
   // // var comp = KT.Project.getComps()
   // // KT.Comps(comp).fitToContent()
   // // KT.Layers.fitToComp(layer);
@@ -18,25 +20,35 @@ function Test() {
   // // KT.Commands.AutoEditor.autoZoom(comp, -50, true)
   // var inside = KT.Layers.insideWorkArea(layer)
 
-  KT.Store.add(comp.name, comp)
+  // KT.Store.add(comp.name, comp)
   // // var items = KT.Project.get(["El RIto Roto Audio.wav", "KT-Auto Edit"]);
   // // KT.Store.add(items[0].name, items[0])
-  var opts = {
-    strength: 10,
-    zoomStrength: 5,
-    randomness: 2,
-    animatePosition: true,
-    animateScale: true,
-    // audioItemName: items[0]? items[0].name : '',
-    compItemName: comp.name, //items[1] ? items[1].name : '',
-    duration: 120,
-    insideWorkArea: false
-  }
+  // var opts = {
+  //   strength: 10,
+  //   zoomStrength: 5,
+  //   randomness: 2,
+  //   animatePosition: true,
+  //   animateScale: true,
+  //   // audioItemName: items[0]? items[0].name : '',
+  //   compItemName: comp.name, //items[1] ? items[1].name : '',
+  //   duration: 120,
+  //   insideWorkArea: false
+  // }
 
-  KT.Commands.AutoEditor(opts)
+  // KT.Commands.AutoEditor(opts)
+  // // var K = KT
+  // KT.Project.addFolder("KT//TEST//PATH")
 
+  // KT.Layers.getSelected().toWorkArea()
+  
 
-  app.endUndoGroup()
+   var tiempoFin = new Date().getTime();
+
+  // Calcula el tiempo de ejecución en minutos y segundos
+  var minutos = Math.floor((tiempoFin - tiempoInicio) / 60000);
+  var segundos = Math.floor((tiempoFin - tiempoInicio) % 60000 / 1000);
+  $.writeln(minutos + ': ' + segundos)
+ app.endUndoGroup()
 }
 
 Test()
