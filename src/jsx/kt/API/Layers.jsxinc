@@ -510,10 +510,12 @@ function removeLayerKeys(layer, props) {
       i = 0,
       len = props.length,
       prop;
-  
+ 
   for(; i < len; i++) {
+    prop = props[i];
     prop = layer.transform[prop];
-    if(_.isProperty(pro)) {
+    
+    if(_.isProperty(prop)) {
       KT.Properties.removeKeys(prop)
     }
   }
@@ -618,6 +620,12 @@ Layers.prototype = {
   fitToComp: function(margins, axis) {
     for(var i = 0, len = this.length; i < len; i++){
       fitLayerToComp(this[i], margins, axis)
+    }
+    return this
+  },
+  checkAndFit: function() {
+    for(var i = 0, len = this.length; i < len; i++){
+      checkAndFit(this[i], true)
     }
     return this
   },

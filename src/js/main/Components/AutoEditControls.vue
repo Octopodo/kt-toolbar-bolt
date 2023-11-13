@@ -5,6 +5,7 @@
     <v-col>
       
       <v-btn 
+        title="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur optio debitis voluptatum excepturi eum culpa provident, sit recusandae, officiis quos magnam fugiat accusantium quas nobis harum mollitia dolorum cum corporis?"
         class=" mx-6" 
         width="180" 
         height="30" 

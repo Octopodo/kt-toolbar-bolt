@@ -37,7 +37,8 @@
 
           <v-btn 
             @click.prevent="moveToWorkArea(false)" 
-            size="x-small" value="0" 
+            size="x-small" 
+            value="0" 
             icon="mdi-format-horizontal-align-right" 
             class="pa-1 x-small" 
             flex="1" 
@@ -51,6 +52,7 @@
           <v-btn 
             
             @click.prevent="" 
+            draggable="true"
             size="x-small" value="0" 
             icon="mdi-swap-vertical" 
             class="pa-1 x-small" 
@@ -72,7 +74,7 @@
       <v-row class="pt-1">
         <v-col></v-col>
         <v-btn
-          @click.prevent="" 
+          @click.prevent="store.fitToComp()" 
           size="x-small" value="0" 
           icon="mdi-resize" 
           class="pa-1 x-small" 
@@ -82,7 +84,7 @@
           
         </v-btn>
         <v-btn
-          @click.prevent="" 
+          @click.prevent="store.removeKeys()" 
           size="x-small" value="0" 
           icon="mdi-cards-diamond" 
           class="pa-1 x-small" 

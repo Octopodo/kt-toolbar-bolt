@@ -10,7 +10,7 @@ var MAIN_COMP_NAME = 'KT-Auto Edit',
 
 
 function AutoEditor(options) {
-  alert(JSON.stringify(options.animateScale))
+  // alert(JSON.stringify(options.animateScale))
   var comp = KT.Store.get(options.compItemName),
       audio = KT.Store.get(options.audioItemName),
       items = app.project.selection,
@@ -119,12 +119,14 @@ function AutoEditor(options) {
     if(options.animatePosition === true) {
       xDir = KT.Math.randomInt(-1, 1);
       yDir = xDir === 0 ? KT.Math.randomSign() : KT.Math.randomInt(-1, 1);
-      alert(layer.name + ': ' + xDir + ', ' + yDir)
+      // alert(layer.name + ': ' + xDir + ', ' + yDir)
       $.writeln(layer.name + ': ' + xDir + ', ' + yDir);
       KT.Layers.pan(layer, [xDir, yDir], strength)
     }
     
-    
+    if(options.animateScale === true && KT.Math.randomInt(0, 1) > 0) {
+      KT.Layers.zoom(layer, options.zoomStrength)
+    }
   })
 
 
@@ -146,6 +148,7 @@ function AutoEditor(options) {
 
 
 function autoPan(comp, direction, strength) {
+  // alert(JSON.stringify(arguments[0]) + '\n' + JSON.stringify(arguments[1]) + '\n' + JSON.stringify(arguments[1]));
   var layers = KT.Layers( {source: comp.selectedLayers})
   layers.pan(direction, strength);
   layers.select();

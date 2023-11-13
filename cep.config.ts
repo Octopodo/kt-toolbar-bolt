@@ -35,6 +35,15 @@ const config: CEP_Config = {
       height: 650,
       scriptPath:"./jsx/kt/index.jsxinc"
     },
+    {
+      mainPath: "./img-browser/index.html",
+      name: "img-browser",
+      panelDisplayName: "KT Browser",
+      autoVisible: true,
+      width: 600,
+      height: 650,
+      scriptPath:"./jsx/kt/index.jsxinc"
+    },
 
   ],
   build: {

@@ -32,7 +32,7 @@ function Store (name) {
     if(state[value] !== undefined) {
       alert("Te value '" + name + "' already exists in the" + name + " store, select another name")
       return
-    } else {
+    } else if(value != undefined){
       state[name] = value
       return state[name]
     }

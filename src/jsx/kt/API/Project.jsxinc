@@ -4,7 +4,8 @@
 var MASTER_FOLDER_NAME = 'KT_PROJECT',
     DATA_FOLDER_NAME = '__data__',
     DATA_COMP_NAME = '__data_comp__',
-    DATA_LAYER_NAME = '__data_layer_'
+    DATA_LAYER_NAME = '__data_layer_',
+    KT_PROJECT_CREATED = '__kt__project__created__'
 
 var defaults = {
   comps: {
@@ -530,8 +531,15 @@ function createKTProject(store) {
     store.add(DATA_FOLDER_NAME, dataFolder);
     store.add(DATA_COMP_NAME, dataComp);
     store.add(DATA_LAYER_NAME, dataLayer);
+    store.add(KT_PROJECT_CREATED, true)
+}
 
-          
+function checkProject(){
+  if(!KT.Project.store.exists(KT_PROJECT_CREATED)) {
+    createKTPd
+  }
+
+
 }
 
 

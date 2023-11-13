@@ -9,7 +9,8 @@ function Test() {
   var proj = KT.Project;
   var comp = KT.Project.getActiveComp()
   var layer = KT.Layers({source:comp})
-  var layers = KT.Layers.getSelected().removeKeys()
+  var layers = KT.Layers.getSelected().removeKeys(['position', 'scale'])
+  KT.Commands.AutoEditor.autoPan(comp, [0, -1], 10)
   // layers.pan( null, 10).sequence(true, 0)
   // // var comp = KT.Project.getComps()
   // // KT.Comps(comp).fitToContent()

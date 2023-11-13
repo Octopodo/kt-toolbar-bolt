@@ -31,6 +31,7 @@ export const OptionsStore = defineStore('options',{
     compSize: [1920, 1080],
     direction: [0, 0],
     duration: 120,
+    layerSelected: false,
     maxRandomness:20,
     randomness: 10,
     resetAnimations: true,
@@ -95,13 +96,19 @@ export const OptionsStore = defineStore('options',{
       let command = this.compSelected === false
         ?`KT.Store.storeItem('comp', '${this.compItemName}');`
         :`KT.Store.delete('${this.compItemName}')`
-
       callCommand(command).then(res => this.compSelected = JSON.parse(res) );
+    },
 
+    selectLayer() {
+      let comA = `var layer = KT.Layers.getSelected[0]; `
+      let command = this.layerSelected === false
+        ?`KT.Store.storeItem('pivotLayer', '${this.compItemName}');`
+        :`KT.Store.delete('${this.compItemName}')`
+      callCommand(command).then(res => this.compSelected = JSON.parse(res) );
     },
 
     autoEdit() {
-      alert(this.animateScale)
+      // alert(this.animateScale)
       let args = {
         strength:this.panStrength ,
         zoomStrength: this.zoomStrength,
@@ -138,7 +145,12 @@ export const OptionsStore = defineStore('options',{
     },
 
     fitToComp() {
-      let command = `KT.Layers.getSelected().fitToComp()`
+      let command = `KT.Layers.getSelected().checkAndFit()`
+      callCommand(command)
+    },
+    removeKeys() {
+      let command = `KT.Layers.getSelected().removeKeys(['position', 'scale'])`
+      callCommand(command)
     }
   },
 })
